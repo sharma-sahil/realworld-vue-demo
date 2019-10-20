@@ -1,18 +1,24 @@
+import SessionService from "@/common/session.service";
 import { api, setToken, clearToken } from "../api";
 export default {
   namespaced: true,
   state: {
     user: null,
-    profile: null
+    profile: null,
+    isAuthenticated: !!SessionService.getToken()
   },
   getters: {
     username(state) {
       return (state.user && state.user.username) || null;
+    },
+    isAuthenticated(state) {
+      return state.isAuthenticated;
     }
   },
   mutations: {
     setUser(state, payload) {
       state.user = payload;
+      SessionService.saveToken(payload.token)
     }
   },
   actions: {
@@ -30,8 +36,8 @@ export default {
           }
         });
         if (response.data.user) {
-          setToken(response.data.user.token);
-          commit("setUser", response.data.user);
+          await setToken(response.data.user.token);
+          await commit("setUser", response.data.user);
         }
       } catch (e) {
         console.error(e);
@@ -48,7 +54,6 @@ export default {
             password
           }
         });
-        console.log({ response });
         if (response.data.user) {
           setToken(response.data.user.token);
           commit("setUser", response.data.user);
@@ -57,6 +62,14 @@ export default {
         console.error(e);
         throw e;
       }
-    }
+    },
+    checkUserAuthorized: async function ({ commit }) {
+      if (SessionService.getToken()) {
+        const token = SessionService.getToken();
+        setToken(token);
+        const response = await api.get("/user");
+        commit("setUser", response.data.user);
+      }
+    },
   }
 };

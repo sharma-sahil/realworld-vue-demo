@@ -5,6 +5,14 @@ export default {
     feed: [],
     count: 0
   },
+  getters: {
+    article(state) {
+      return state.article;
+    },
+    comments(state) {
+      return state.comments;
+    }
+  },
   mutations: {
     setArticles(state, { articles, articlesCount }) {
       state.feed = articles;
@@ -37,6 +45,19 @@ export default {
       }
       const response = await api.get(route);
       commit("setArticles", response.data);
+    },
+    async publishArticle({ commit }, request) {
+      try {
+        const response = await api.post("articles", {
+          article: request
+        });
+        if (response.data) {
+          return response;
+        }
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
     }
   }
 };

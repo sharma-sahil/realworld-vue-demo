@@ -15,44 +15,36 @@
               <li class="nav-item">
                 <a
                   class="nav-link"
-                  v-if="username"
+                  v-if="isAuthenticated"
                   @click="setFeed('user');"
                   :class="{ active: activeFeed === 'user' }"
-                >
-                  Your Feed
-                </a>
+                >Your Feed</a>
               </li>
               <li class="nav-item">
                 <a
                   class="nav-link"
                   @click="setFeed('global');"
                   :class="{ active: activeFeed === 'global' }"
-                >
-                  Global Feed
-                </a>
+                >Global Feed</a>
               </li>
             </ul>
           </div>
 
-          <ArticlePreview
-            v-for="article in globalArticles"
-            :key="article.slug"
-            :article="article"
-          ></ArticlePreview>
+          <ArticlePreview v-for="article in globalArticles" :key="article.slug" :article="article"></ArticlePreview>
         </div>
         <div class="col-md-3">
           <div class="sidebar">
             <p>Popular Tags</p>
 
             <div class="tag-list">
-              <a href="" class="tag-pill tag-default">programming</a>
-              <a href="" class="tag-pill tag-default">javascript</a>
-              <a href="" class="tag-pill tag-default">emberjs</a>
-              <a href="" class="tag-pill tag-default">angularjs</a>
-              <a href="" class="tag-pill tag-default">react</a>
-              <a href="" class="tag-pill tag-default">mean</a>
-              <a href="" class="tag-pill tag-default">node</a>
-              <a href="" class="tag-pill tag-default">rails</a>
+              <a href class="tag-pill tag-default">programming</a>
+              <a href class="tag-pill tag-default">javascript</a>
+              <a href class="tag-pill tag-default">emberjs</a>
+              <a href class="tag-pill tag-default">angularjs</a>
+              <a href class="tag-pill tag-default">react</a>
+              <a href class="tag-pill tag-default">mean</a>
+              <a href class="tag-pill tag-default">node</a>
+              <a href class="tag-pill tag-default">rails</a>
             </div>
           </div>
         </div>
@@ -87,6 +79,9 @@ export default {
     },
     username() {
       return this.$store.getters["users/username"];
+    },
+    isAuthenticated() {
+      return this.$store.getters["users/isAuthenticated"];
     }
   },
   data: function() {
