@@ -2,111 +2,65 @@
   <div class="article-page">
     <div class="banner">
       <div class="container">
-        <h1>How to build webapps that scale</h1>
-
-        <div class="article-meta">
-          <a href>
-            <img src="http://i.imgur.com/Qr71crq.jpg" />
-          </a>
-          <div class="info">
-            <a href class="author">Eric Simons</a>
-            <span class="date">January 20th</span>
-          </div>
-          <button class="btn btn-sm btn-outline-secondary">
-            <i class="ion-plus-round"></i> &nbsp; Follow Eric Simons
-            <span class="counter">(10)</span>
-          </button>
-          &nbsp;&nbsp;
-          <button class="btn btn-sm btn-outline-primary">
-            <i class="ion-heart"></i> &nbsp; Favorite Post
-            <span class="counter">(29)</span>
-          </button>
-        </div>
+        <h1>{{ article.title }}</h1>
+        <NagpArticleMeta :article="article" :actions="true"></NagpArticleMeta>
       </div>
     </div>
 
     <div class="container page">
       <div class="row article-content">
         <div class="col-md-12">
-          <p>
-            Web development technologies have evolved at an incredible clip over
-            the past few years.
-          </p>
-          <h2 id="introducing-ionic">Introducing RealWorld.</h2>
-          <p>It's a great solution for learning how other frameworks work.</p>
+          <div v-html="parseMarkdown(article.body)"></div>
+          <ul class="tag-list">
+            <li v-for="(tag, index) of article.tagList" :key="tag + index">
+              <!-- <router-link :to="homeRoute" :class="className" v-text="name"></router-link>
+              <RwvTag :name="tag" class="tag-default tag-pill tag-outline"></RwvTag>-->
+            </li>
+          </ul>
         </div>
       </div>
 
       <hr />
 
       <div class="article-actions">
-        <div class="article-meta">
-          <a href="profile.html">
-            <img src="http://i.imgur.com/Qr71crq.jpg" />
-          </a>
-          <div class="info">
-            <a href class="author">Eric Simons</a>
-            <span class="date">January 20th</span>
-          </div>
-
-          <button class="btn btn-sm btn-outline-secondary">
-            <i class="ion-plus-round"></i> &nbsp; Follow Eric Simons
-            <span class="counter">(10)</span>
-          </button>
-          &nbsp;
-          <button class="btn btn-sm btn-outline-primary">
-            <i class="ion-heart"></i> &nbsp; Favorite Post
-            <span class="counter">(29)</span>
-          </button>
-        </div>
+        <NagpArticleMeta :article="article" :actions="true"></NagpArticleMeta>
       </div>
 
       <div class="row">
         <div class="col-xs-12 col-md-8 offset-md-2">
-          <form class="card comment-form">
-            <div class="card-block">
-              <textarea class="form-control" placeholder="Write a comment..." rows="3"></textarea>
-            </div>
-            <div class="card-footer">
-              <img src="http://i.imgur.com/Qr71crq.jpg" class="comment-author-img" />
-              <button class="btn btn-sm btn-primary">Post Comment</button>
-            </div>
-          </form>
-
-          <div class="card">
-            <div class="card-block">
-              <p class="card-text">
-                With supporting text below as a natural lead-in to additional
-                content.
-              </p>
-            </div>
-            <div class="card-footer">
-              <a href class="comment-author">
-                <img src="http://i.imgur.com/Qr71crq.jpg" class="comment-author-img" />
-              </a>
-              &nbsp;
-              <a href class="comment-author">Jacob Schmidt</a>
-              <span class="date-posted">Dec 29th</span>
-            </div>
+          <div>
+            <!-- <RwvListErrors :errors="errors" /> -->
+            <form class="card comment-form" @submit.prevent="submitComment(article_slug, comment)">
+              <div class="card-block">
+                <textarea
+                  class="form-control"
+                  v-model="comment"
+                  placeholder="Write a comment..."
+                  rows="3"
+                ></textarea>
+              </div>
+              <div class="card-footer">
+                <img :src="currentUser.image" class="comment-author-img" />
+                <button class="btn btn-sm btn-primary">Post Comment</button>
+              </div>
+            </form>
           </div>
 
-          <div class="card">
+          <div class="card" v-for="(com, index) in comments" :key="index">
             <div class="card-block">
-              <p class="card-text">
-                With supporting text below as a natural lead-in to additional
-                content.
-              </p>
+              <p class="card-text">{{ com.body }}</p>
             </div>
             <div class="card-footer">
               <a href class="comment-author">
-                <img src="http://i.imgur.com/Qr71crq.jpg" class="comment-author-img" />
+                <img :src="com.author.image" class="comment-author-img" />
               </a>
-              &nbsp;
-              <a href class="comment-author">Jacob Schmidt</a>
-              <span class="date-posted">Dec 29th</span>
-              <span class="mod-options">
-                <i class="ion-edit"></i>
-                <i class="ion-trash-a"></i>
+              <router-link
+                class="comment-author"
+                :to="{ name: 'profile', params: { username: com.author.username } }"
+              >{{ com.author.username }}</router-link>
+              <span class="date-posted">{{ formatDate(com.createdAt) }}</span>
+              <span v-if="isCurrentUser(com)" class="mod-options">
+                <i class="ion-trash-a" @click="destroy(article_slug, com.id)"></i>
               </span>
             </div>
           </div>
@@ -117,30 +71,80 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import marked from "marked";
+import store from "@/store";
+import moment from "moment";
+
+import NagpArticleMeta from "@/components/ArticleMeta";
 
 export default {
   name: "nagp-article",
   props: {
-    slug: {
+    article_slug: {
       type: String,
       required: true
     }
   },
+  components: {
+    NagpArticleMeta
+  },
   beforeRouteEnter(to, from, next) {
     Promise.all([
-      store.dispatch(FETCH_ARTICLE, to.params.slug),
-      store.dispatch(FETCH_COMMENTS, to.params.slug)
+      store.dispatch("articles/fetchArticle", to.params.article_slug),
+      store.dispatch("articles/fetchComments", to.params.article_slug)
     ]).then(() => {
       next();
     });
   },
+  data() {
+    return {
+      comment: "",
+      errors: {}
+    };
+  },
   computed: {
-    ...mapGetters(["article", "currentUser", "comments", "isAuthenticated"])
+    article() {
+      return this.$store.getters["articles/article"];
+    },
+    comments() {
+      return this.$store.getters["articles/comments"];
+    },
+    isAuthenticated() {
+      return this.$store.getters["users/isAuthenticated"];
+    },
+    currentUser() {
+      return this.$store.getters["users/currentUser"];
+    }
+
+    // homeRoute: () => ({ name: "home-tag", params: { tag: name } })
+    // ...mapGetters(["articles/article", "currentUser", "comments", "isAuthenticated"])
   },
   methods: {
     parseMarkdown(content) {
       return marked(content);
+    },
+    isCurrentUser(com) {
+      if (this.currentUser.username && com.author.username) {
+        return com.author.username === this.currentUser.username;
+      }
+      return false;
+    },
+    submitComment(slug, comment) {
+      this.$store
+        .dispatch("articles/createComment", { slug, comment })
+        .then(() => {
+          this.comment = null;
+          this.errors = {};
+        })
+        .catch(({ response }) => {
+          this.errors = response.data.errors;
+        });
+    },
+    destroy(slug, commentId) {
+      this.$store.dispatch("articles/destroyComment", { slug, commentId });
+    },
+    formatDate(dateString) {
+      return moment(dateString).format("MMMM Do, YYYY");
     }
   }
 };

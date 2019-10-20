@@ -86,9 +86,7 @@ export default {
       this.$store
         .dispatch("articles/publishArticle", this.article)
         .then(({ data }) => {
-          console.log(data);
           this.inProgress = false;
-          console.log(data.article.slug);
           this.$router.push({
             name: "article",
             params: { article_slug: data.article.slug }

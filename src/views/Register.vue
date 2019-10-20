@@ -14,15 +14,30 @@
 
           <form>
             <fieldset class="form-group">
-              <input  v-model="username" class="form-control form-control-lg" type="text" placeholder="Your Name" />
+              <input
+                v-model="username"
+                class="form-control form-control-lg"
+                type="text"
+                placeholder="Your Name"
+              />
             </fieldset>
             <fieldset class="form-group">
-              <input  v-model="email" class="form-control form-control-lg" type="text" placeholder="Email" />
+              <input
+                v-model="email"
+                class="form-control form-control-lg"
+                type="text"
+                placeholder="Email"
+              />
             </fieldset>
             <fieldset class="form-group">
-              <input  v-model="password" class="form-control form-control-lg" type="password" placeholder="Password" />
+              <input
+                v-model="password"
+                class="form-control form-control-lg"
+                type="password"
+                placeholder="Password"
+              />
             </fieldset>
-            <button @click="createUser"  class="btn btn-lg btn-primary pull-xs-right">Sign up</button>
+            <button @click="createUser" class="btn btn-lg btn-primary pull-xs-right">Sign up</button>
           </form>
         </div>
       </div>

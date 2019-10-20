@@ -39,7 +39,8 @@ export default new Router({
     {
       path: "/article/:article_slug",
       name: "article",
-      component: () => import("@/views/Article.vue")
+      component: () => import("@/views/Article.vue"),
+      props: true
     },
     {
       path: "/:username",

@@ -24,7 +24,9 @@
           <router-link class="nav-link" to="/register">Sign up</router-link>
         </li>
         <li v-if="isAuthenticated" class="nav-item">
-          <router-link class="nav-link" :to="`/@${username}`">{{ username }}</router-link>
+          <router-link class="nav-link" :to="`/@${username}`">
+            {{ username }}
+          </router-link>
         </li>
       </ul>
     </div>
