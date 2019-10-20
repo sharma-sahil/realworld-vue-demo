@@ -118,7 +118,6 @@ export default {
       this.article.tagList = this.article.tagList.filter(t => t !== tag);
     },
     addTag(tag) {
-      console.log({ tag });
       this.article.tagList.push(tag);
       this.tagInput = null;
     }

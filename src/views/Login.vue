@@ -4,7 +4,9 @@
       <div class="row">
         <div class="col-md-6 offset-md-3 col-xs-12">
           <h1 class="text-xs-center">Sign in</h1>
-          <p class="text-xs-center"><a href="">Need an account?</a></p>
+          <p class="text-xs-center">
+            <router-link :to="{ name: 'register' }">Need an account?</router-link>
+          </p>
 
           <ul class="error-messages">
             <li v-for="(error, i) in errors" :key="i">{{ error.message }}</li>
@@ -27,9 +29,7 @@
                 placeholder="Password"
               />
             </fieldset>
-            <button @click="login" class="btn btn-lg btn-primary pull-xs-right">
-              Sign in
-            </button>
+            <button @click="login" class="btn btn-lg btn-primary pull-xs-right">Sign in</button>
           </form>
         </div>
       </div>
@@ -54,7 +54,7 @@ export default {
           password: this.password
         })
         .then(() => {
-          this.$router.push('/')
+          this.$router.push("/");
           this.errors = [];
         })
         .catch(err => {

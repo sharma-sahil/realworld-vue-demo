@@ -28,7 +28,7 @@
 
       <div class="row">
         <div class="col-xs-12 col-md-8 offset-md-2">
-          <div>
+          <div v-if="isAuthenticated">
             <!-- <RwvListErrors :errors="errors" /> -->
             <form class="card comment-form" @submit.prevent="submitComment(article_slug, comment)">
               <div class="card-block">
@@ -124,8 +124,10 @@ export default {
       return marked(content);
     },
     isCurrentUser(com) {
-      if (this.currentUser.username && com.author.username) {
-        return com.author.username === this.currentUser.username;
+      if (null !== this.currentUser) {
+        if (this.currentUser.username && com.author.username) {
+          return com.author.username === this.currentUser.username;
+        }
       }
       return false;
     },

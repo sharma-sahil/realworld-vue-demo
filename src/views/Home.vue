@@ -37,14 +37,7 @@
             <p>Popular Tags</p>
 
             <div class="tag-list">
-              <a href class="tag-pill tag-default">programming</a>
-              <a href class="tag-pill tag-default">javascript</a>
-              <a href class="tag-pill tag-default">emberjs</a>
-              <a href class="tag-pill tag-default">angularjs</a>
-              <a href class="tag-pill tag-default">react</a>
-              <a href class="tag-pill tag-default">mean</a>
-              <a href class="tag-pill tag-default">node</a>
-              <a href class="tag-pill tag-default">rails</a>
+              <NagpTag v-for="(tag, index) in tags" :name="tag" :key="index"></NagpTag>
             </div>
           </div>
         </div>
@@ -55,9 +48,12 @@
 
 <script>
 import ArticlePreview from "@/components/ArticlePreview.vue";
+import NagpTag from "@/components/Tag.vue";
+
 export default {
   components: {
-    ArticlePreview
+    ArticlePreview,
+    NagpTag
   },
   methods: {
     setFeed(feedType) {
@@ -73,6 +69,9 @@ export default {
   created() {
     this.setFeed("global");
   },
+  mounted() {
+    this.$store.dispatch("articles/fetchTags");
+  },
   computed: {
     globalArticles() {
       return this.$store.state.articles.feed || [];
@@ -82,6 +81,12 @@ export default {
     },
     isAuthenticated() {
       return this.$store.getters["users/isAuthenticated"];
+    },
+    tags() {
+      return this.$store.getters["articles/tags"];
+    },
+    tag() {
+      return this.$route.params.tag;
     }
   },
   data: function() {

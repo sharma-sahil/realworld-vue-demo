@@ -105,8 +105,10 @@ export default {
       return moment(dateString).format("MMMM Do, YYYY");
     },
     isCurrentUser() {
-      if (this.currentUser.username && this.article.author.username) {
-        return this.currentUser.username === this.article.author.username;
+      if (null !== this.currentUser) {
+        if (this.currentUser.username && com.author.username) {
+          return com.author.username === this.currentUser.username;
+        }
       }
       return false;
     },

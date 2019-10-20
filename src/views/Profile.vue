@@ -89,8 +89,10 @@ export default {
   },
   methods: {
     isCurrentUser() {
-      if (this.currentUser.username && this.profile.username) {
-        return this.currentUser.username === this.profile.username;
+      if (null !== this.currentUser) {
+        if (this.currentUser.username && this.profile.username) {
+          return this.currentUser.username === this.profile.username;
+        }
       }
       return false;
     }

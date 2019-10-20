@@ -25,8 +25,6 @@ export default {
   },
   methods: {
     fetchArticles() {
-      console.log(this.$route.params);
-      console.log(this.author);
       this.$store.dispatch("articles/fetchArticles", {
         author: this.author
       });

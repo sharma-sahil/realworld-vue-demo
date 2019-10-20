@@ -4,6 +4,7 @@ export default {
   state: {
     feed: [],
     count: 0,
+    tags: [],
     article: {
       author: {},
       title: "",
@@ -19,6 +20,9 @@ export default {
     },
     comments(state) {
       return state.comments;
+    },
+    tags(state) {
+      return state.tags;
     }
   },
   mutations: {
@@ -31,6 +35,9 @@ export default {
     },
     setComments(state, comments) {
       state.comments = comments;
+    },
+    setTags(state, tags) {
+      state.tags = tags;
     },
     resetState() {
       this.state.articles.article = {
@@ -152,7 +159,6 @@ export default {
       }
     },
     async fetchArticles({ commit }, payload = { page: 1 }) {
-      console.log(payload);
       let route = "/articles";
       if (payload) {
         const {
@@ -169,5 +175,14 @@ export default {
       const response = await api.get(route);
       commit("setArticles", response.data);
     },
+    fetchTags({ commit }) {
+      return api.get("tags")
+        .then(({ data }) => {
+          commit("setTags", data.tags);
+        })
+        .catch(error => {
+          throw new Error(error);
+        });
+    }
   }
 };

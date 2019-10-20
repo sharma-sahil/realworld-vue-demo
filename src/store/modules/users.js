@@ -45,6 +45,7 @@ export default {
           }
         });
         if (response.data.user) {
+          SessionService.saveToken(response.data.user.token);
           await setToken(response.data.user.token);
           await commit("setUser", response.data.user);
         }
