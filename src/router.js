@@ -43,9 +43,20 @@ export default new Router({
       props: true
     },
     {
-      path: "/:username",
-      name: "profile",
-      component: () => import("@/views/Profile.vue")
+      path: "/@:username",
+      component: () => import("@/views/Profile.vue"),
+      children: [
+        {
+          path: "",
+          name: "profile",
+          component: () => import("@/views/MyArticles")
+        },
+        {
+          name: "profile-favorites",
+          path: "favorites",
+          component: () => import("@/views/FavoriteArticles")
+        }
+      ]
     }
   ]
 });

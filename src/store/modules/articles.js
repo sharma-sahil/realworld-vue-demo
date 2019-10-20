@@ -1,5 +1,4 @@
 import { api } from "../api";
-import Vue from "vue";
 export default {
   namespaced: true,
   state: {
@@ -151,6 +150,24 @@ export default {
         console.error(e);
         throw e;
       }
+    },
+    async fetchArticles({ commit }, payload = { page: 1 }) {
+      console.log(payload);
+      let route = "/articles";
+      if (payload) {
+        const {
+          tag = null,
+          author = null,
+          favourited = null,
+          page = 1
+        } = payload;
+        route += tag ? `?tag=${tag}&` : "";
+        route += author ? `?author=${author}&` : "";
+        route += favourited ? `?favourited=${favourited}&` : "";
+        route += page ? `?offset=${(page - 1) * 10}&limit=10` : "";
+      }
+      const response = await api.get(route);
+      commit("setArticles", response.data);
     },
   }
 };
