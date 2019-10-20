@@ -22,6 +22,12 @@ export default {
     setUser(state, payload) {
       state.user = payload;
       SessionService.saveToken(payload.token)
+    },
+    removeUser(state) {
+      state.isAuthenticated = false;
+      state.user = {};
+      state.errors = {};
+      SessionService.destroyToken();
     }
   },
   actions: {
@@ -74,5 +80,24 @@ export default {
         commit("setUser", response.data.user);
       }
     },
+    updateuser(context, payload) {
+      const user = {
+        email: payload.email,
+        username: payload.username,
+        bio: payload.bio,
+        image: payload.image
+      };
+      if (payload.password) {
+        user.password = payload.password;
+      }
+
+      return api.put("user", user).then(({ data }) => {
+        context.commit("setUser", data.user);
+        return data;
+      });
+    },
+    logout(context) {
+      context.commit("removeUser");
+    }
   }
 };

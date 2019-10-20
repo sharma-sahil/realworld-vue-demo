@@ -5,12 +5,13 @@
         <div class="col-md-6 offset-md-3 col-xs-12">
           <h1 class="text-xs-center">Your Settings</h1>
 
-          <form>
+          <form @submit.prevent="updateSettings()">
             <fieldset>
               <fieldset class="form-group">
                 <input
                   class="form-control"
                   type="text"
+                  v-model="currentUser.image"
                   placeholder="URL of profile picture"
                 />
               </fieldset>
@@ -18,6 +19,7 @@
                 <input
                   class="form-control form-control-lg"
                   type="text"
+                  v-model="currentUser.username"
                   placeholder="Your Name"
                 />
               </fieldset>
@@ -25,6 +27,7 @@
                 <textarea
                   class="form-control form-control-lg"
                   rows="8"
+                  v-model="currentUser.bio"
                   placeholder="Short bio about you"
                 ></textarea>
               </fieldset>
@@ -32,6 +35,7 @@
                 <input
                   class="form-control form-control-lg"
                   type="text"
+                  v-model="currentUser.email"
                   placeholder="Email"
                 />
               </fieldset>
@@ -39,16 +43,42 @@
                 <input
                   class="form-control form-control-lg"
                   type="password"
+                  v-model="currentUser.password"
                   placeholder="Password"
                 />
               </fieldset>
-              <button class="btn btn-lg btn-primary pull-xs-right">
-                Update Settings
-              </button>
+              <button class="btn btn-lg btn-primary pull-xs-right" type="submit">Update Settings</button>
             </fieldset>
           </form>
+
+          <hr />
+          <button @click="logout" class="btn btn-outline-danger">Or click here to logout.</button>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  name: "NagpSettings",
+  computed: {
+    currentUser() {
+      return this.$store.getters["users/currentUser"];
+    }
+  },
+  methods: {
+    updateSettings() {
+      this.$store.dispatch("users/updateuser", this.currentUser).then(() => {
+        // #todo, nice toast and no redirect
+        this.$router.push({ name: "home" });
+      });
+    },
+    logout() {
+      this.$store.dispatch("users/logout").then(() => {
+        this.$router.push({ name: "home" });
+      });
+    }
+  }
+};
+</script>
