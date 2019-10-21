@@ -44,7 +44,6 @@
       <button
         class="btn btn-sm pull-xs-right"
         v-if="!actions"
-        @click="toggleFavorite"
         :class="{
           'btn-primary': article.favorited,
           'btn-outline-primary': !article.favorited
@@ -58,7 +57,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import moment from "moment";
 
 export default {
@@ -75,7 +73,6 @@ export default {
     }
   },
   computed: {
-    // ...mapGetters(["currentUser", "profile", "isAuthenticated"]),
     currentUser() {
       return this.$store.getters["users/currentUser"];
     },
@@ -88,11 +85,11 @@ export default {
         "btn-outline-primary": !this.article.favorited
       };
     },
-    followUserLabel() {
-      // return `${this.profile.following ? "Unfollow" : "Follow"} ${
-      //   this.article.author.username
-      // }`;
-    },
+    // followUserLabel() {
+    //   return `${this.profile.following ? "Unfollow" : "Follow"} ${
+    //     this.article.author.username
+    //   }`;
+    // },
     favoriteArticleLabel() {
       return this.article.favorited ? "Unfavorite Article" : "Favorite Article";
     },
@@ -106,32 +103,32 @@ export default {
     },
     isCurrentUser() {
       if (null !== this.currentUser) {
-        if (this.currentUser.username && com.author.username) {
-          return com.author.username === this.currentUser.username;
+        if (this.currentUser.username && this.article.author.username) {
+          return this.article.author.username === this.currentUser.username;
         }
       }
       return false;
     },
-    toggleFavorite() {
-      if (!this.isAuthenticated) {
-        this.$router.push({ name: "login" });
-        return;
-      }
-      const action = this.article.favorited ? FAVORITE_REMOVE : FAVORITE_ADD;
-      this.$store.dispatch(action, this.article.slug);
-    },
-    toggleFollow() {
-      if (!this.isAuthenticated) {
-        this.$router.push({ name: "login" });
-        return;
-      }
-      const action = this.article.following
-        ? FETCH_PROFILE_UNFOLLOW
-        : FETCH_PROFILE_FOLLOW;
-      this.$store.dispatch(action, {
-        username: this.profile.username
-      });
-    },
+    // toggleFavorite() {
+    //   if (!this.isAuthenticated) {
+    //     this.$router.push({ name: "login" });
+    //     return;
+    //   }
+    //   const action = this.article.favorited ? FAVORITE_REMOVE : FAVORITE_ADD;
+    //   this.$store.dispatch(action, this.article.slug);
+    // },
+    // toggleFollow() {
+    //   if (!this.isAuthenticated) {
+    //     this.$router.push({ name: "login" });
+    //     return;
+    //   }
+    //   const action = this.article.following
+    //     ? FETCH_PROFILE_UNFOLLOW
+    //     : FETCH_PROFILE_FOLLOW;
+    //   this.$store.dispatch(action, {
+    //     username: this.profile.username
+    //   });
+    // },
     async deleteArticle() {
       try {
         await this.$store.dispatch("articles/deleteArticle", this.article.slug);

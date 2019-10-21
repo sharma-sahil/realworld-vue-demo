@@ -16,6 +16,10 @@ export default {
     }
   },
   computed: {
+    newRoute() {
+      const url = "tag/" + this.name;
+      return url;
+    },
     homeRoute: () => ({ name: "home-tag", params: { tag: name } })
   }
 };

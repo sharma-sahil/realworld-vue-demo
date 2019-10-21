@@ -8,8 +8,14 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "home",
-      component: Home
+      component: Home,
+      children: [
+        {
+          path: "tag/:tag",
+          name: "home-tag",
+          component: () => import("@/views/ViewTag")
+        }
+      ]
     },
     {
       path: "/login",
