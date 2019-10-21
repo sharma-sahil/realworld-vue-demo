@@ -11,7 +11,6 @@
           <ul class="error-messages">
             <li v-for="(error, i) in errors" :key="i">{{ error.message }}</li>
           </ul>
-
           <form>
             <fieldset class="form-group">
               <input
