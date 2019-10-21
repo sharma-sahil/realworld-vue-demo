@@ -5,7 +5,7 @@ export default {
   state: {
     user: null,
     profile: null,
-    isAuthenticated: !!SessionService.getToken()
+    isAuthenticated: false
   },
   getters: {
     username(state) {
@@ -21,6 +21,7 @@ export default {
   mutations: {
     setUser(state, payload) {
       state.user = payload;
+      state.isAuthenticated = true;
       SessionService.saveToken(payload.token)
     },
     removeUser(state) {
