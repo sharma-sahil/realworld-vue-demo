@@ -38,41 +38,39 @@ export default {
     },
     loginUser: async function ({ commit }, { email, password }) {
       clearToken();
-      try {
-        const response = await api.post("/users/login", {
-          user: {
-            email,
-            password
-          }
-        });
-        if (response.data.user) {
-          SessionService.saveToken(response.data.user.token);
-          await setToken(response.data.user.token);
-          await commit("setUser", response.data.user);
-        }
-      } catch (e) {
-        console.error(e);
-        throw e;
-      }
+
+      return new Promise((resolve, reject) => {
+        api.post("users/login", { user: { email, password } })
+          .then(({ data }) => {
+            setToken(data.user.token);
+            commit("setUser", data.user);
+            resolve(data);
+          })
+          .catch(({ response }) => {
+            reject(response.data);
+          });
+      });
     },
     createUser: async function ({ commit }, { username, email, password }) {
       clearToken();
-      try {
-        const response = await api.post("/users", {
+
+      return new Promise((resolve, reject) => {
+        api.post("users", {
           user: {
             username,
             email,
             password
           }
-        });
-        if (response.data.user) {
-          setToken(response.data.user.token);
-          commit("setUser", response.data.user);
-        }
-      } catch (e) {
-        console.error(e);
-        throw e;
-      }
+        })
+          .then(({ data }) => {
+            setToken(data.user.token);
+            commit("setUser", data.user);
+            resolve(data);
+          })
+          .catch(({ response }) => {
+            reject(response.data);
+          });
+      });
     },
     checkUserAuthorized: async function ({ commit }) {
       if (SessionService.getToken()) {

@@ -9,7 +9,7 @@
           </p>
 
           <ul class="error-messages">
-            <li v-for="(error, i) in errors" :key="i">{{ error.message }}</li>
+            <li v-for="(error, i) in errors" :key="i">{{ error }}</li>
           </ul>
           <form>
             <fieldset class="form-group">
@@ -47,6 +47,21 @@ export default {
   },
   methods: {
     login() {
+      this.errors = [];
+      let validForm = true;
+      if (this.email === "") {
+        validForm = false;
+        this.errors.push("Email is required");
+      }
+      if (this.password === "") {
+        validForm = false;
+        this.errors.push("Password is required");
+      }
+
+      if (!validForm) {
+        return;
+      }
+
       this.$store
         .dispatch("users/loginUser", {
           email: this.email,
@@ -57,7 +72,7 @@ export default {
           this.errors = [];
         })
         .catch(err => {
-          this.errors.push(err);
+          this.errors.push(err.errors);
         });
     }
   }

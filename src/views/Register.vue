@@ -9,7 +9,7 @@
           </p>
 
           <ul class="error-messages">
-            <li v-for="(error, i) in errors" :key="i">{{ error.message }}</li>
+            <li v-for="(error, i) in errors" :key="i">{{ error }}</li>
           </ul>
 
           <form>
@@ -57,6 +57,25 @@ export default {
   },
   methods: {
     createUser() {
+      this.errors = [];
+      let validForm = true;
+      if (this.email === "") {
+        validForm = false;
+        this.errors.push("Email is required");
+      }
+      if (this.password === "") {
+        validForm = false;
+        this.errors.push("Password is required");
+      }
+      if (this.username === "") {
+        validForm = false;
+        this.errors.push("Username is required");
+      }
+
+      if (!validForm) {
+        return;
+      }
+
       this.$store
         .dispatch("users/createUser", {
           username: this.username,
@@ -68,7 +87,13 @@ export default {
           this.errors = [];
         })
         .catch(err => {
-          this.errors.push(err);
+          this.errors = [];
+          const errorKeys = Object.keys(err.errors);
+          console.log(errorKeys);
+          for (const key of errorKeys) {
+            const errorMessage = key + " " + err.errors[key];
+            this.errors.push(errorMessage);
+          }
         });
     }
   }
