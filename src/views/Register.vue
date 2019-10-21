@@ -89,7 +89,6 @@ export default {
         .catch(err => {
           this.errors = [];
           const errorKeys = Object.keys(err.errors);
-          console.log(errorKeys);
           for (const key of errorKeys) {
             const errorMessage = key + " " + err.errors[key];
             this.errors.push(errorMessage);

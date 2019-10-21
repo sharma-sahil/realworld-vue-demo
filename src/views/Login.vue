@@ -72,7 +72,12 @@ export default {
           this.errors = [];
         })
         .catch(err => {
-          this.errors.push(err.errors);
+          this.errors = [];
+          const errorKeys = Object.keys(err.errors);
+          for (const key of errorKeys) {
+            const errorMessage = key + " " + err.errors[key];
+            this.errors.push(errorMessage);
+          }
         });
     }
   }

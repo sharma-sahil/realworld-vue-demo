@@ -9,7 +9,6 @@ describe("Test App loaded", () => {
 describe("Test Sign in", () => {
   it("Visits the Sign in url", () => {
     cy.visit("#/login");
-    // cy.get('button').click();
     cy.contains("button", "Sign in");
   });
 });
