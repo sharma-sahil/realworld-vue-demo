@@ -1,5 +1,7 @@
 # realworld-vue-demo
 
+## Deployed at: https://cranky-bardeen-eef9d4.netlify.com/
+
 ## Project setup
 ```
 npm install
