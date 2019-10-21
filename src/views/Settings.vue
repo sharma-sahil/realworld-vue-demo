@@ -71,12 +71,12 @@ export default {
     updateSettings() {
       this.$store.dispatch("users/updateuser", this.currentUser).then(() => {
         // #todo, nice toast and no redirect
-        this.$router.push({ name: "home" });
+        this.$router.push("/");
       });
     },
     logout() {
       this.$store.dispatch("users/logout").then(() => {
-        this.$router.push({ name: "home" });
+        this.$router.push("/");
       });
     }
   }
