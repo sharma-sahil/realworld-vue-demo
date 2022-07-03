@@ -1,5 +1,5 @@
 # realworld-vue-demo
-Sample Application Developed for NAGP 2019 VueJs Assignment
+Sample Application Developed to get hands on experience on Vue.js
 
 ## Deployed at:
  https://cranky-bardeen-eef9d4.netlify.com/
